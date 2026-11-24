@@ -131,6 +131,7 @@ Marks the end of the assembly program.
 <img width="1535" height="857" alt="image" src="https://github.com/user-attachments/assets/23319448-9319-4b34-82b5-de63a9bf3640" />
 
 <img width="1535" height="862" alt="image" src="https://github.com/user-attachments/assets/2348ccbb-1b2d-4811-bbc3-26fab23349ed" />
-## Expected Result
+
+# Expected Result
 
 When the push button connected to P1.4 is pressed, the buzzer sounds. When the push button is released, the buzzer stops. The Proteus simulation verifies successful interfacing of the buzzer with the 8051 microcontroller.
