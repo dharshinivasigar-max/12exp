@@ -1,64 +1,135 @@
-# Design-and-Implementation-of-an-Eight-LED-Sequential-Lighting-System-Using-AT89C51-Microcontroller
-## Aim
-To interface an LED with the AT89C51/8051 microcontroller and blink it continuously using Assembly Language.
+# Push-Button-Controlled-Buzzer-and-Speaker-Using-AT89C51-Microcontroller
+Design and Implementation of a Push-Button-Controlled Buzzer and Speaker Using AT89C51 Microcontroller
 
-## Apparatus Required
-AT89C51/8051 Microcontroller, Development Board/Proteus, LED, 330 Ω Resistor, 11.0592 MHz Crystal, Power Supply (5 V), Keil µVision, Proteus.
+# Aim
+To interface a buzzer with the 8051 (AT89C51) microcontroller and control the buzzer using a push-button switch.
 
-### Theory
-The 8051 microcontroller has four 8-bit I/O ports. An LED connected to Port 2 can be turned ON and OFF by writing logic 0 or logic 1 depending on the connection. A software delay creates the blinking effect.
+# Apparatus Required
+• AT89C51/AT89S52 Microcontroller
+• Proteus Professional
+• Keil µVision IDE
+• BC547 NPN Transistor
+• 330 Ω Resistor
+• Push Button Switch
+• Buzzer
+• 0.1 µF Capacitor
+• Power Supply (+5 V)
 
-### Circuit Connections
-LED Anode → +5V through 330 Ω resistor, LED Cathode → P2.0 (active LOW) or alternatively P2.0→330 Ω→LED→GND (active HIGH).
 
+## Pin Connections
 
+| Component | 8051 Pin / Connection | Description |
+|---|---|---|
+| Push Button | P1.4 | Digital input |
+| Buzzer Driver | P3.2 | Digital output to BC547 base through 330 Ω resistor |
+| BC547 | Collector → Buzzer, Emitter → GND | Switching transistor |
+| Buzzer | +5V and BC547 Collector | Audible output |
+| Reset | RST | Reset network |
 
-### Algorithm
+# Theory
+The 8051 microcontroller cannot directly drive most buzzers because of current limitations. A BC547 transistor is used as a switching device. When Port 3.2 becomes HIGH, the transistor turns ON and current flows through the buzzer, producing sound. When Port 3.2 is LOW, the transistor turns OFF and the buzzer remains silent.
+
+# Algorithm
 1. Start the program.
+2. Configure P1.4 as input and P3.2 as output.
+3. Read the push-button status continuously.
+4. If P1.4 = 1, make P3.2 = 1 to turn ON the buzzer.
+5. If P1.4 = 0, make P3.2 = 0 to turn OFF the buzzer.
+6. Repeat continuously.
 
-2. Configure Port 2 as output.
-
-3. Turn LED ON.
-
-4. Generate delay.
-
-5. Turn LED OFF.
-
-6. Generate delay.
-
-7. Repeat forever.
-
-### 8051 Assembly Program
+# 8051 Assembly Language Program
+Program objective: Read the switch connected to P1.4 and control the buzzer connected to P3.2.
 ```
 ORG 0000H
 
-START:
-   MOV P2,#00H      ; LED ON (active LOW)
-   ACALL DELAY
-   MOV P2,#0FFH     ; LED OFF
-   ACALL DELAY
-   SJMP START
+       CLR     P1.4
+
+BACK:   CLR     P3.2
+
+WAIT:   JNB     P1.4, WAIT
+       SETB    P3.2
+       ACALL   DELAY
+
+WAIT1:  JB      P1.4, WAIT1
+       SJMP    BACK
 
 DELAY:
-   MOV R7,#255
-L1: MOV R6,#255
-L2: DJNZ R6,L2
-   DJNZ R7,L1
-   RET
+       MOV     R0, #255
+HERE1:  MOV     R1, #255
+HERE:   DJNZ    R1, HERE
+       DJNZ    R0, HERE1
+       RET
 
-END
+       END
 ```
-### Flow of Execution
-  Initialize → LED ON → Delay → LED OFF → Delay → Repeat
+# Program Explanation
+Instruction
 
-### Observation
-  The LED connected to Port 2 blinks continuously.
+Function
 
-## Output 
+    ORG 0000H
 
-<img width="941" height="673" alt="Screenshot 2026-10-27 133953" src="https://github.com/user-attachments/assets/4e6a3c6f-fe96-4214-a9d0-ca5106698f90" />
+Places the program starting address at memory location 0000H.
 
-<img width="976" height="613" alt="Screenshot 2026-10-27 133922" src="https://github.com/user-attachments/assets/31ed9c0d-6132-4ec3-9247-424858d13bbd" />
+    CLR P1.4
 
-## Result
-  The LED blinking program using the 8051 microcontroller was implemented and verified successfully.
+Initially clears the switch input pin P1.4.
+
+    CLR P3.2
+
+Turns OFF the buzzer connected to P3.2.
+
+    JNB P1.4, WAIT
+
+Waits while P1.4 is LOW. The program continues when the switch input becomes HIGH.
+
+    SETB P3.2
+
+Makes P3.2 HIGH and turns ON the buzzer.
+
+ACALL DELAY
+
+Calls the delay subroutine.
+
+    JB P1.4, WAIT1
+
+Keeps checking the input while P1.4 remains HIGH.
+
+    SJMP BACK
+
+Returns to the beginning and turns OFF the buzzer after the switch is released.
+
+    DJNZ R1 / DJNZ R0
+    
+Creates a software delay using two nested loops.
+
+    RET
+
+Returns from the delay subroutine.
+
+    END
+
+Marks the end of the assembly program.
+
+# Procedure
+1. Create a new 8051 project in Keil µVision and select the AT89C51/AT89S52 device.
+
+2. Create an ASM source file and enter the given assembly program.
+
+3. Build the project and generate the HEX file.
+
+4. Open the supplied Proteus circuit and double-click the microcontroller.
+
+5. Load the generated HEX file into the Program File field.
+
+6. Set a suitable crystal frequency and run the simulation.
+
+7. Operate the switch connected to P1.4 and observe the buzzer connected through the BC547 transistor.
+
+# Software Output
+
+<img width="1535" height="857" alt="image" src="https://github.com/user-attachments/assets/23319448-9319-4b34-82b5-de63a9bf3640" />
+
+<img width="1535" height="862" alt="image" src="https://github.com/user-attachments/assets/2348ccbb-1b2d-4811-bbc3-26fab23349ed" />
+# Expected Result
+When the push button connected to P1.4 is pressed, the buzzer sounds. When the push button is released, the buzzer stops. The Proteus simulation verifies successful interfacing of the buzzer with the 8051 microcontroller.
